@@ -4,6 +4,7 @@ services:
     image: node:10.12.0-alpine
     container_name: server
     hostname: server
+    restart: always
     ports: 
       - "8080:8080"
     volumes:
@@ -11,7 +12,6 @@ services:
     working_dir: /src/
     depends_on: 
       - db
-    restart: always
     command: npm i && npm run start
   db:
     image: postgres:11.0-alpine
@@ -20,5 +20,11 @@ services:
     restart: always
     ports:
       - "5432:5432"
-    env_file:
-      - .env
+    volumes: 
+      - "./dbdata:/var/lib/postgresql/data"
+    # env_file: .env
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: username
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: database
